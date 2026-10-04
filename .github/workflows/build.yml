@@ -23,14 +23,13 @@ jobs:
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Grant gradlew permission
-        run: chmod +x PornBlocker/gradlew
-        continue-on-error: true
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
 
       - name: Build Release APK
-        run: |
-          cd PornBlocker
-          ./gradlew assembleRelease --no-daemon
+        run: gradle assembleRelease --no-daemon --project-dir PornBlocker
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
