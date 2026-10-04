@@ -31,7 +31,6 @@ class MainActivity : Activity() {
         dpm       = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
         adminName = ComponentName(this, AdminReceiver::class.java)
 
-        // Simple layout built in code (no XML needed for setup screen)
         val layout = android.widget.LinearLayout(this).apply {
             orientation = android.widget.LinearLayout.VERTICAL
             setPadding(48, 48, 48, 48)
@@ -51,10 +50,10 @@ class MainActivity : Activity() {
         layout.addView(btn)
         setContentView(layout)
 
-        // Auto-start if already configured
-        if (isVpnPrepared() && dpm.isAdminActive(adminName)) {
+        // Auto-start if VPN already granted (admin optional)
+        if (isVpnPrepared()) {
             startVpnService()
-            statusText.text = "Protection already active. You can close this app."
+            statusText.text = "✅ Protection already active. You can close this app."
         }
     }
 
@@ -91,8 +90,11 @@ class MainActivity : Activity() {
                 else statusText.text = "VPN permission denied. Cannot activate protection."
             }
             REQ_ADMIN -> {
-                if (resultCode == RESULT_OK) activateAll()
-                else statusText.text = "Admin permission denied. App can be uninstalled easily."
+                // VPN parte sempre — admin è opzionale, serve solo a bloccare disinstallazione
+                activateAll()
+                if (resultCode != RESULT_OK) {
+                    statusText.text = "✅ Protection ACTIVE (without admin lock).\nPornHub is blocked but app can be uninstalled."
+                }
             }
         }
     }
