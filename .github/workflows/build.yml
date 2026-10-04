@@ -29,11 +29,11 @@ jobs:
           gradle-version: '8.4'
 
       - name: Build Release APK
-        run: gradle assembleRelease --no-daemon --project-dir PornBlocker
+        run: gradle assembleDebug --no-daemon --project-dir PornBlocker
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PornBlocker-release
-          path: PornBlocker/app/build/outputs/apk/release/*.apk
+          path: path: PornBlocker/app/build/outputs/apk/debug/*.apk
           retention-days: 7
